@@ -1,0 +1,49 @@
+cflags   = -Wall -Werror -pedantic -g
+ldflags  = -pthread -lm
+
+rule cc
+    description = Building obj $in
+    depfile     = $out.d
+    command     = gcc -fdiagnostics-color=always -MMD -MF $out.d $cflags -c $in -o $out 
+rule ld
+    description = Linking $out
+    command     = gcc $ldflags -o $out $in
+
+rule lib
+    description = Creating static lib $out
+    command     = ar rcs $out $in
+
+rule clean
+    description = Cleaning built files
+    command     = ninja -t clean
+
+rule help
+    description = Help for targets
+    command     = ninja -t help
+
+rule depgraph
+    description = Generating dependency graph
+    command     = ninja -t graph | dot -Tsvg -o $out
+
+rule svg-view
+    description = Showing svg file
+    command     = nohup inkview $in
+
+rule run-test
+    description = Running test $out ...
+    command     = $in 
+
+rule run-cmd
+    description = Running cmd $in
+    command     = $in
+
+rule re2c
+    description = Re2c $out
+    command     = re2c -T -o $out $in
+
+rule rm-dirs
+    description = Removing dirs
+    command     = rm -rf $dir_lib $dir_bin $dir_obj $dir_aux $builddir
+
+rule valgrind
+    command     = valgrind --track-origins=yes --leak-check=full $in $args

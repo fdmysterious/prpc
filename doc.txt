@@ -1,0 +1,59 @@
+Faire un format assez proche du JSON-RPC mais en plus simple :
+ * Format texte
+ * Question/Réponse
+ * Notifications
+ * Système d'ID pour les questions/réponses
+
+Format d'un message :
+
+ID:nom_commande arguments
+
+Types d'arguments :
+ * Nombre
+ * Chaine de caractère
+ * Booléen
+ * Tableau ?
+
+Résultats possibles :
+ * OK
+ * Resultat avec un détail selon la commande appelée
+ * ERR avec un message d'erreur
+
+Exemples
+ 0:wave.create
+ => 0:result 0
+
+ 1:wave.load 1 "test_file.wav"
+ => 1:OK
+
+ 0:wave.can_create
+ => 0:result no
+
+ 0:wave.available
+ => 0:result 5
+
+ 0:wave.file.get 0
+ => 0:result "test_file.wav"
+
+ Tokens :
+    * TOKEN_COMMAND
+    | ([0-9]+)[:]([A-Za-z0-9\-_\.]+)
+
+    * TOKEN_STRING
+    | ["](.*[^\\])["]
+
+    * TOKEN_NUMBER
+    | (-)?([0-9]+)(?:[.]([0-9]*))?
+
+    * TOKEN_BOOLEAN
+    | (yes|no)
+
+    * TOKEN_IDENTIFIER
+    | [A-Za-z0-9\-_\.]+
+
+  Commandes particulières
+    has
+    | Permet de savoir si un appel RPC est possible ou pas
+        Exemple
+        | 0:has wave.create
+        | => 0:result yes

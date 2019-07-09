@@ -1,0 +1,35 @@
+build $dir_obj/src/app.c.o : cc src/app.c 
+    cflags = $cflags -D__FILENAME__=\"src/app.c\" -Isrc
+
+build $dir_obj/src/main.c.o : cc src/main.c 
+    cflags = $cflags -D__FILENAME__=\"src/main.c\" -Isrc
+
+build $dir_obj/src/sys/ansiterm.c.o : cc src/sys/ansiterm.c 
+    cflags = $cflags -D__FILENAME__=\"src/sys/ansiterm.c\" -Isrc
+
+build $dir_obj/src/sys/log.c.o : cc src/sys/log.c 
+    cflags = $cflags -D__FILENAME__=\"src/sys/log.c\" -Isrc
+
+build src/lex.c : re2c src/lex.re.c 
+
+build $dir_obj/src/lex.c.o : cc src/lex.c 
+    cflags = $cflags -D__FILENAME__=\"src/lex.c\" -Isrc
+
+build $dir_obj/src/parse.c.o : cc src/parse.c 
+    cflags = $cflags -D__FILENAME__=\"src/parse.c\" -Isrc
+
+build $dir_lib/libmain.a : lib $dir_obj/src/sys/ansiterm.c.o $dir_obj/src/sys/log.c.o $dir_obj/src/lex.c.o $dir_obj/src/parse.c.o 
+
+build $dir_bin/app : ld $dir_obj/src/app.c.o $dir_obj/src/main.c.o $dir_lib/libmain.a 
+build app : phony $dir_bin/app
+
+build $dir_obj/tests/parse.c.o : cc tests/parse.c 
+    cflags = $cflags -D__FILENAME__=\"tests/parse.c\" -Isrc -Itests/lib
+
+build $dir_obj/tests/lib/test.c.o : cc tests/lib/test.c 
+    cflags = $cflags -D__FILENAME__=\"tests/lib/test.c\" -Isrc
+
+build $dir_lib/libtest.a : lib $dir_obj/tests/lib/test.c.o $dir_lib/libmain.a 
+
+build $dir_bin/tests/parse : ld $dir_obj/tests/parse.c.o $dir_lib/libmain.a $dir_lib/libtest.a 
+

@@ -1,0 +1,6 @@
+builddir = build
+dir_bin  = bin
+dir_obj  = $builddir/obj
+dir_deps = $builddir/deps
+dir_lib  = $builddir/lib
+dir_aux  = aux

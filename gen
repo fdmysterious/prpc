@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+import script.output as output
+import script.target as target
+
+libmain = target.lib(
+    "libmain",
+    srcs = [
+        "src/sys/ansiterm.c",
+        "src/sys/log.c",
+        target.re2c("src/lex.re.c"),
+        "src/parse.c"
+    ],
+    incdirs = [ "src" ]
+)
+
+app = target.executable(
+    "app",
+    srcs = [
+        "src/app.c",
+        "src/main.c"
+    ],
+    incdirs = [ "src" ],
+    objs    = [ libmain ],
+    aliases = [ "app" ]
+)
+
+libtest = target.lib(
+    "libtest",
+    srcs = [
+        "tests/lib/test.c"
+    ],
+
+    incdirs = [
+        "src"
+    ],
+
+    objs = [ libmain ]
+)
+
+def add_test( name ):
+    return target.executable(
+        "tests/%s" % name,
+        srcs    = [ "tests/%s.c" % name ],
+        incdirs = ["src", "tests/lib"],
+        objs=[libmain, libtest]
+    )
+
+tests = [
+    add_test("parse")
+]
+
+with open( "targets/autogen.ninja", "w" ) as fhandle:
+    output.rules( fhandle, [app] + tests )
+
+# MODIFIED

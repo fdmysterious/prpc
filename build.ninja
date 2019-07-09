@@ -1,0 +1,14 @@
+include cfg/directories.ninja
+include cfg/rules.ninja
+
+####################################
+
+include targets/autogen.ninja
+
+#build app : phony $dir_bin/app
+
+include targets/special.ninja
+
+build valgrind : valgrind $dir_bin/app
+build all : phony app
+default all

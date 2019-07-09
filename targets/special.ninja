@@ -1,0 +1,8 @@
+build clean                 : clean
+build rm-dirs               : rm-dirs
+build purge                 : phony rm-dirs clean
+
+build help                  : help
+
+build $dir_aux/depgraph.svg : depgraph
+build depgraph              : svg-view $dir_aux/depgraph.svg
