@@ -10,7 +10,7 @@
 
 
 #include <test.h>
-#include <parse.h>
+#include <prpc/parse.h>
 
 void test_parse_int()
 {
@@ -32,10 +32,11 @@ void test_parse_float()
 {
     float num[] = {
         8283.382f, -8283.382f,
-        1.2983f, -1.2983f
+        1.2983f, -1.2983f,
+        10.2f, -10.2f
     };
 
-    const char *num_str[] = { "8283.382", "-8283.382", "1.2983", "-1.2983" };
+    const char *num_str[] = { "8283.382", "-8283.382", "1.2983", "-1.2983", "10.2", "-10.2" };
 
     size_t n_nums = sizeof(num)/sizeof(int);
 
