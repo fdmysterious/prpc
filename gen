@@ -7,8 +7,8 @@ libmain = target.lib(
     srcs = [
         "src/sys/ansiterm.c",
         "src/sys/log.c",
-        target.re2c("src/lex.re.c"),
-        "src/parse.c"
+        target.re2c("src/prpc/lex.re.c"),
+        "src/prpc/parse.c"
     ],
     incdirs = [ "src" ]
 )
@@ -46,7 +46,8 @@ def add_test( name ):
     )
 
 tests = [
-    add_test("parse")
+    add_test("parse"),
+    add_test("lex")
 ]
 
 with open( "targets/autogen.ninja", "w" ) as fhandle:

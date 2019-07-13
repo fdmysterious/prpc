@@ -27,10 +27,10 @@ const char *token_type_str( Token_Type_t type )
 //////////////////////////////////////////
 // Main lexer thing
 //////////////////////////////////////////
-char *token_next( char *start, Token_t *dst )
+const char *token_next( const char *start, Token_t *dst )
 {
-    char *YYMARKER;
-    char *YYCURSOR = start;
+    const char *YYMARKER;
+    const char *YYCURSOR = start;
 
     const char *id, *sep, *name;
 
@@ -55,11 +55,9 @@ char *token_next( char *start, Token_t *dst )
         str        = ["]( . \ end |[\]["])*["];
         
         str {
-            dst->type           = TOKEN_STRING;
-            dst->begin          = start;
-            dst->end            = YYCURSOR;
-            dst->data.str.begin = start+1;
-            dst->data.str.end   = YYCURSOR-1;
+            dst->type  = TOKEN_STRING;
+            dst->begin = start+1;
+            dst->end   = YYCURSOR-1;
 
             return YYCURSOR;
         }

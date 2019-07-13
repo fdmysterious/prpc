@@ -24,16 +24,11 @@ typedef enum {
 } Token_Type_t;
 
 typedef struct {
-    Token_Type_t type;
-    char *begin;
-    char   *end;
+Token_Type_t type;
+const char *begin;
+const char   *end;
 
-    union {
-        struct {
-            const char *begin;
-            const char *end;
-        } str;
-
+union {
         int  intg;
         float num;
         uint8_t boolean;
@@ -49,4 +44,4 @@ typedef struct {
 //////////////////////////////////////////
 
 const char *token_type_str( Token_Type_t type );
-char *token_next( char *sstr, Token_t *dst );
+const char *token_next( const char *sstr, Token_t *dst );
