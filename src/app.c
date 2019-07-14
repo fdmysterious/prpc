@@ -15,7 +15,8 @@
 static const char *test_cmds[] = {
     "0:hello",
     "1:has hello",
-    "1928:has goodbye"
+    "1928:has goodbye",
+    "0:funky"
 };
 
 bool app_init( const int argc, const char * argv[] )

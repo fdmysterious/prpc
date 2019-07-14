@@ -27,6 +27,12 @@ PRPC_CMD( hello )
     prpc_build_ok( id, resp_buf, max_resp_len );
 }
 
+PRPC_CMD( funky )
+{
+    printf("YEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n");
+    prpc_build_result( id, resp_buf, max_resp_len, 4, TOKEN_INT, 1203, TOKEN_BOOLEAN, 1, TOKEN_STRING, "ARGH", TOKEN_IDENTIFIER, "OOOH" );
+}
+
 PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr )
 {
     const char *YYMARKER;
@@ -39,6 +45,7 @@ PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr )
         *       { return NULL;           }
         'has'   { return prpc_cmd_has;   }
         'hello' { return prpc_cmd_hello; }
+        'funky' { return prpc_cmd_funky; }
      */
 }
 
