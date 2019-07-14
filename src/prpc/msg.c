@@ -18,7 +18,7 @@ void prpc_build_error( const size_t id, char *buf, const size_t max_len, const c
     snprintf( buf, max_len, "%lu:error \"%s\"\n", id, err );
 }
 
-void prpc_build_result( const size_t id, char *buf, const size_t max_len, const size_t nvals, ... )
+static void _prpc_build_msg_va( const size_t id, char *buf, const size_t max_len, const char *cmd, const size_t nvals, va_list args )
 {
     static const char *bool_vals[] = { "no", "yes" };
 
@@ -26,14 +26,11 @@ void prpc_build_result( const size_t id, char *buf, const size_t max_len, const 
     size_t         len  = max_len;
     size_t      written = 0;
 
-    va_list args;
-
     Token_Type_t ntoken = TOKEN_EOF; // EOF for waiting type, then data
 
-    len -= (written = snprintf( ptr, len, "%lu:result", id ));
+    len -= (written = snprintf( ptr, len, "%lu:%s", id, cmd ));
     ptr += written;
 
-    va_start( args, nvals );
     size_t i;
     for( i = 0 ; i < nvals ; i++ ) {
         ntoken = va_arg(args, Token_Type_t);
@@ -64,7 +61,6 @@ void prpc_build_result( const size_t id, char *buf, const size_t max_len, const 
         if( len > max_len ) len = 0; // Intg overflow protection
         ptr += written;
     }
-    va_end  ( args );
 
     if( len <= 1 ) {
         log_error("Not enough place !");
@@ -74,6 +70,22 @@ void prpc_build_result( const size_t id, char *buf, const size_t max_len, const 
     // Closing resp string
     *(ptr  ) = '\n';
     *(ptr+1) =    0;
+}
+
+void prpc_build_msg( const size_t id, char *buf, const size_t max_len, const char *cmd, const size_t nvals, ... )
+{
+    va_list args;
+    va_start( args, nvals );
+    _prpc_build_msg_va( id, buf, max_len, cmd, nvals, args );
+    va_end( args );
+}
+
+void prpc_build_result( const size_t id, char *buf, const size_t max_len, const size_t nvals, ... )
+{
+    va_list args;
+    va_start( args, nvals );
+    _prpc_build_msg_va( id, buf, max_len, "result", nvals, args );
+    va_end( args );
 }
 
 void prpc_build_result_boolean( const size_t id, char *buf, const size_t max_len, const uint8_t val )
