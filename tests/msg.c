@@ -14,7 +14,7 @@
 
 int test_run()
 {
-    const char *msg_ref = "0:hello_world identifier \"string\" yes no 1 -1 1.000000 -1.000000";
+    const char *msg_ref = "0:hello_world identifier \"string\" yes no 1 -1 1.000000 -1.000000\n";
     char buf[2048];
 
     prpc_build_msg( buf, 2048,
