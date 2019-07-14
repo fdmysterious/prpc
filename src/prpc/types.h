@@ -7,15 +7,16 @@
 #pragma once
 
 typedef enum {
-    PRPC_ARG_STRING,
-    PRPC_ARG_INT,
-    PRPC_ARG_FLOAT,
-    PRPC_ARG_BOOLEAN,
+    PRPC_STRING,
+    PRPC_INT,
+    PRPC_FLOAT,
+    PRPC_BOOLEAN,
 } PRPC_Arg_Type_t;
 
 typedef struct {
     PRPC_Arg_Type_t type;
-    void*              v;
+    char *v_begin;
+    char *v_end;
 } PRPC_Arg_t;
 
 void    prpc_arg_free        ( PRPC_Arg_t *arg );

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include <sys/log.h>
+
 const char *token_type_str( Token_Type_t type )
 {
     static const char *token_str[] = {
@@ -125,4 +127,23 @@ void token_next( const char **ptr, Token_t *dst )
             return;
         }
      */
+}
+
+int token_next_except( const char **ptr, Token_t *dst, const Token_Type_t type )
+{
+    token_next( ptr, dst );
+    if( dst->type != type ) {
+        // TODO // Invalid type error
+        log_error( "Invalid token : excepted %s, got %s", token_type_str(type), token_type_str(dst->type) );
+        return 1;
+    }
+
+    else return 0;
+}
+
+int token_next_arg( const char **ptr, Token_t *dst, const Token_Type_t type )
+{
+    int ret;
+    if( (ret = token_next_except( ptr, dst, TOKEN_SEPARATOR ) != 0) ) return ret;
+    return token_next_except( ptr, dst, type );
 }

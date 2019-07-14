@@ -8,7 +8,9 @@ libmain = target.lib(
         "src/sys/ansiterm.c",
         "src/sys/log.c",
         target.re2c("src/prpc/lex.re.c"),
-        "src/prpc/parse.c"
+        "src/prpc/parse.c",
+        "src/prpc/msg.c",
+        target.re2c("src/prpc/cmds.re.c")
     ],
     incdirs = [ "src" ]
 )
