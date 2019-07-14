@@ -9,8 +9,10 @@
 #include <pthread.h>
 
 #include <prpc/lex.h>
+#include <prpc/cmds.h>
 
-static const char *test_str = "0293:dfkjsdf This is yes no yess nooo \"yessaiiiiii 923:loo\\\"ooooooliiii\" DEAD 23 -28 -382.49 99.33";
+
+static const char *test_str = "02:first 00:second";
 
 bool app_init( const int argc, const char * argv[] )
 {
@@ -24,7 +26,7 @@ uint8_t app_run()
     Token_t tok;
 
     do {
-        ptr = token_next(ptr, &tok);
+        token_next(&ptr, &tok);
         if( tok.type == TOKEN_SEPARATOR ) continue;
         log_notice( ">> Got token type : %s ; \"%.*s\"", token_type_str(tok.type), tok.end-tok.begin, tok.begin );
         switch( tok.type ) {
@@ -32,7 +34,9 @@ uint8_t app_run()
             case TOKEN_INT       : log_verbose(">> int    : %d"  , tok.data.intg    ); break;
             case TOKEN_FLOAT     : log_verbose(">> float  : %f"  , tok.data.num     ); break;
             case TOKEN_BOOLEAN   : log_verbose(">> bool   : %d"  , tok.data.boolean ); break;
-            case TOKEN_COMMAND   : log_verbose(">> ID : %d, name : %.*s", tok.data.cmd.id, tok.data.cmd.name_end-tok.data.cmd.name_begin, tok.data.cmd.name_begin); break;
+            case TOKEN_COMMAND   :
+                log_verbose(">> ID : %d, name : %.*s", tok.data.cmd.id, tok.data.cmd.name_end-tok.data.cmd.name_begin, tok.data.cmd.name_begin);
+            break;
             default:break;
         }
     } while( (tok.type != TOKEN_EOF) && (tok.type != TOKEN_ERROR) );

@@ -27,20 +27,21 @@ const char *token_type_str( Token_Type_t type )
 //////////////////////////////////////////
 // Main lexer thing
 //////////////////////////////////////////
-const char *token_next( const char *start, Token_t *dst )
+void token_next( const char **ptr, Token_t *dst )
 {
     const char *YYMARKER;
-    const char *YYCURSOR = start;
-
     const char *id, *sep, *name;
+
+    const char *start = *ptr;
 
     dst->begin = NULL;
     dst->end   = NULL;
 
     /*!stags:re2c format = 'const char *@@;'; */
     /*!re2c
-        re2c:define:YYCTYPE = char;
-        re2c:yyfill:enable=0;
+        re2c:define:YYCTYPE  = char;
+        re2c:define:YYCURSOR = (*ptr);
+        re2c:yyfill:enable   = 0;
 
         end        = "\x00";
         eol        = "[\r\n]+";
@@ -57,71 +58,71 @@ const char *token_next( const char *start, Token_t *dst )
         str {
             dst->type  = TOKEN_STRING;
             dst->begin = start+1;
-            dst->end   = YYCURSOR-1;
+            dst->end   = (*ptr) - 1;
 
-            return YYCURSOR;
+            return;
         }
 
-        *   { dst->type = TOKEN_ERROR;     return YYCURSOR; }
-        end { dst->type = TOKEN_EOF;       return YYCURSOR; }
-        eol { dst->type = TOKEN_EOL;       return YYCURSOR; }
-        wh  { dst->type = TOKEN_SEPARATOR; return YYCURSOR; }
+        *   { dst->type   = TOKEN_ERROR;     return; }
+        end { dst->type   = TOKEN_EOF;       return; }
+        eol { dst->type   = TOKEN_EOL;       return; }
+        wh  { dst->type   = TOKEN_SEPARATOR; return; }
 
         float {
             dst->type     = TOKEN_FLOAT;
             dst->begin    = start;
-            dst->end      = YYCURSOR;
+            dst->end      = (*ptr);
 
             dst->data.num = parse_float( dst->begin, dst->end );
 
-            return YYCURSOR;
+            return;
         }
 
         int {
             dst->type      = TOKEN_INT;
             dst->begin     = start;
-            dst->end       = YYCURSOR;
+            dst->end       = (*ptr);
             dst->data.intg = parse_int( dst->begin, dst->end );
 
-            return YYCURSOR;
+            return;
         }
 
         bool_true {
             dst->type         = TOKEN_BOOLEAN;
             dst->begin        = start;
-            dst->end          = YYCURSOR;
+            dst->end          = (*ptr);
             dst->data.boolean = 1;
 
-            return YYCURSOR;
+            return;
         }
 
         bool_false {
             dst->type         = TOKEN_BOOLEAN;
             dst->begin        = start;
-            dst->end          = YYCURSOR;
+            dst->end          = (*ptr);
             dst->data.boolean = 0;
 
-            return YYCURSOR;
+            return;
         }
 
         @id int @sep ':' @name identifier {
             dst->type  = TOKEN_COMMAND;
             dst->begin = start;
-            dst->end   = YYCURSOR;
+            dst->end   = (*ptr);
             
             dst->data.cmd.id         = parse_int( id, sep );
             dst->data.cmd.name_begin = name;
-            dst->data.cmd.name_end   = YYCURSOR;
+            dst->data.cmd.name_end   = (*ptr);
 
-            return YYCURSOR;
+            return;
         }
 
         identifier {
             dst->type  = TOKEN_IDENTIFIER;
             dst->begin = start;
-            dst->end   = YYCURSOR;
+            dst->end   = (*ptr);
 
-            return YYCURSOR;
+            return;
         }
      */
 }

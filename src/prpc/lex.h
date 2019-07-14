@@ -44,4 +44,4 @@ union {
 //////////////////////////////////////////
 
 const char *token_type_str( Token_Type_t type );
-const char *token_next( const char *sstr, Token_t *dst );
+void        token_next( const char **ptr, Token_t *dst );

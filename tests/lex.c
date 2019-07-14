@@ -19,8 +19,8 @@ int test_run()
 {
     Token_t tk;
     const char *ptr = test_str;
-
-    ptr = token_next( ptr, &tk );
+    
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_COMMAND );
     test_assert( tk.data.cmd.id == 293, "Invalid Command id : %d != %d", tk.data.cmd.id, 293 );
     test_assert(
@@ -30,10 +30,10 @@ int test_run()
         tk.data.cmd.name_begin
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_IDENTIFIER );
     test_assert(
         strncmp( tk.begin, "This", 4 ) == 0,
@@ -42,24 +42,24 @@ int test_run()
         tk.begin
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_BOOLEAN );
     test_assert( tk.data.boolean == 1, "Invalid boolean, excepted 1, got 0" );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_BOOLEAN );
     test_assert( tk.data.boolean == 0, "Invalid boolean, excepted 1, got 0" );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_IDENTIFIER );
     test_assert(
         strncmp( tk.begin, "yess", 4 ) == 0,
@@ -68,10 +68,10 @@ int test_run()
         tk.begin
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_IDENTIFIER );
     test_assert(
         strncmp( tk.begin, "nooo", 4 ) == 0,
@@ -80,10 +80,10 @@ int test_run()
         tk.begin
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_STRING );
     test_assert(
         strncmp( tk.begin, "Hello \\\" World !", strlen("Hello \\\" World !")) == 0,
@@ -92,47 +92,47 @@ int test_run()
         tk.begin
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_INT );
     test_assert(
         tk.data.intg == 10,
         "Invalid int : %d != 10", tk.data.intg
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_INT );
     test_assert(
         tk.data.intg == -10,
         "Invalid int : %d != -10", tk.data.intg
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_FLOAT );
     test_assert(
         tk.data.num == -10.2f,
         "Invalid float : %f != -10.2", tk.data.num
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_SEPARATOR );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_FLOAT );
     test_assert(
         tk.data.num == 10.2f,
         "Invalid float : %f != 10.2", tk.data.num
     );
 
-    ptr = token_next( ptr, &tk );
+    token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_EOF );
     
     return 0;
