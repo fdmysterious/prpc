@@ -56,7 +56,7 @@ static void _prpc_build_msg_va( const size_t id, char *buf, const size_t max_len
             break;
             default:break; // TODO // ERROR ?
         }
-        log_verbose("written = %ld", written);
+        //log_verbose("written = %ld", written);
 
         if( len > max_len ) len = 0; // Intg overflow protection
         ptr += written;

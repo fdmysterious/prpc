@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include "lex.h"
+
 #pragma once
 
 void prpc_build_ok            ( const size_t id, char *buf, const size_t max_len );

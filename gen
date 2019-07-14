@@ -49,7 +49,8 @@ def add_test( name ):
 
 tests = [
     add_test("parse"),
-    add_test("lex")
+    add_test("lex"),
+    add_test("msg")
 ]
 
 with open( "targets/autogen.ninja", "w" ) as fhandle:
