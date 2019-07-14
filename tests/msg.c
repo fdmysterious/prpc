@@ -17,8 +17,8 @@ int test_run()
     const char *msg_ref = "0:hello_world identifier \"string\" yes no 1 -1 1.000000 -1.000000";
     char buf[2048];
 
-    prpc_build_msg( 0, buf, 2048,
-        "hello_world", 8,
+    prpc_build_msg( buf, 2048,
+        0, "hello_world", 8,
         TOKEN_IDENTIFIER, "identifier",
         TOKEN_STRING    , "string",
         TOKEN_BOOLEAN   ,    1,

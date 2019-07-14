@@ -8,17 +8,17 @@
 #include "lex.h"
 #include "msg.h"
 
-void prpc_build_ok( const size_t id, char *buf, const size_t max_len )
+void prpc_build_ok( char *buf, const size_t max_len, const size_t id )
 {
     snprintf( buf, max_len, "%lu:ok\n", id );
 }
 
-void prpc_build_error( const size_t id, char *buf, const size_t max_len, const char *err )
+void prpc_build_error( char *buf, const size_t max_len, const size_t id, const char *err )
 {
     snprintf( buf, max_len, "%lu:error \"%s\"\n", id, err );
 }
 
-static void _prpc_build_msg_va( const size_t id, char *buf, const size_t max_len, const char *cmd, const size_t nvals, va_list args )
+static void _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id, const char *cmd, const size_t nvals, va_list args )
 {
     static const char *bool_vals[] = { "no", "yes" };
 
@@ -72,30 +72,30 @@ static void _prpc_build_msg_va( const size_t id, char *buf, const size_t max_len
     *(ptr+1) =    0;
 }
 
-void prpc_build_msg( const size_t id, char *buf, const size_t max_len, const char *cmd, const size_t nvals, ... )
+void prpc_build_msg( char *buf, const size_t max_len, const size_t id, const char *cmd, const size_t nvals, ... )
 {
     va_list args;
     va_start( args, nvals );
-    _prpc_build_msg_va( id, buf, max_len, cmd, nvals, args );
+    _prpc_build_msg_va( buf, max_len, id, cmd, nvals, args );
     va_end( args );
 }
 
-void prpc_build_result( const size_t id, char *buf, const size_t max_len, const size_t nvals, ... )
+void prpc_build_result( char *buf, const size_t max_len, const size_t id, const size_t nvals, ... )
 {
     va_list args;
     va_start( args, nvals );
-    _prpc_build_msg_va( id, buf, max_len, "result", nvals, args );
+    _prpc_build_msg_va( buf, max_len, id, "result", nvals, args );
     va_end( args );
 }
 
-void prpc_build_result_boolean( const size_t id, char *buf, const size_t max_len, const uint8_t val )
+void prpc_build_result_boolean( char *buf, const size_t max_len, const size_t id, const uint8_t val )
 {
     //snprintf( buf, max_len, "%lu:result %s\n", id, bool_vals[val == 1]); // == 1 to securise array access (what if val == 2 ?)
-    prpc_build_result( id, buf, max_len, 1, TOKEN_BOOLEAN, val );
+    prpc_build_result( buf, max_len, id, 1, TOKEN_BOOLEAN, val );
 }
 
-void prpc_build_result_int( const size_t id, char *buf, const size_t max_len, const int intg )
+void prpc_build_result_int( char *buf, const size_t max_len, const size_t id, const int intg )
 {
     //snprintf( buf, max_len, "%lu:result %d", id, intg );
-    prpc_build_result( id, buf, max_len, 1, TOKEN_INT, intg );
+    prpc_build_result( buf, max_len, id, 1, TOKEN_INT, intg );
 }

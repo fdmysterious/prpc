@@ -17,22 +17,22 @@ PRPC_CMD( has )
     if( token_next_arg( ptr, &tk, TOKEN_IDENTIFIER ) == 0 ) {
         const char *cursor = tk.begin;
         PRPC_Parse_Function_t cmd = prpc_cmd_parser_get(&cursor);
-        prpc_build_result_boolean( id, resp_buf, max_resp_len, cmd != NULL );
+        prpc_build_result_boolean( resp_buf, max_resp_len, id, cmd != NULL );
     }
 
-    else prpc_build_error( id, resp_buf, max_resp_len, "Unexcepted token" );
+    else prpc_build_error( resp_buf, max_resp_len, id, "Unexcepted token" );
 }
 
 PRPC_CMD( hello )
 {
     printf("Hello world !\n");
-    prpc_build_ok( id, resp_buf, max_resp_len );
+    prpc_build_ok( resp_buf, id, max_resp_len );
 }
 
 PRPC_CMD( funky )
 {
     printf("YEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n");
-    prpc_build_result( id, resp_buf, max_resp_len, 4, TOKEN_INT, 1203, TOKEN_BOOLEAN, 1, TOKEN_STRING, "ARGH", TOKEN_IDENTIFIER, "OOOH" );
+    prpc_build_result( resp_buf, max_resp_len, id, 4, TOKEN_INT, 1203, TOKEN_BOOLEAN, 1, TOKEN_STRING, "ARGH", TOKEN_IDENTIFIER, "OOOH" );
 }
 
 PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr )
@@ -168,7 +168,7 @@ void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_
             }
 
             else {
-                prpc_build_error( tk.data.cmd.id, resp_buf, max_resp_len, "Uknown method" );
+                prpc_build_error( resp_buf, max_resp_len, tk.data.cmd.id, "Uknown method" );
             }
             break;
         }
