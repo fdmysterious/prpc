@@ -28,6 +28,17 @@ PRPC_CMD( funky )
     prpc_build_result( resp_buf, max_resp_len, id, 4, PRPC_INT, 1203, PRPC_BOOLEAN, 1, PRPC_STRING, "ARGH", PRPC_IDENTIFIER, "OOOH" );
 }
 
+PRPC_CMD( replicate )
+{
+    int        intg;
+    float       num;
+    uint8_t boolean;
+
+    if( prpc_parse_args( resp_buf, max_resp_len, ptr, id, 3, PRPC_INT, &intg, PRPC_FLOAT, &num, PRPC_BOOLEAN, &boolean ) == 0 ) {
+        prpc_build_result( resp_buf, max_resp_len, id, 3, PRPC_INT, intg, PRPC_FLOAT, num, PRPC_BOOLEAN, boolean );
+    }
+}
+
 PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr )
 {
     const char *YYMARKER;
@@ -37,10 +48,11 @@ PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr )
         re2c:define:YYCURSOR = (*ptr);
         re2c:yyfill:enable   = 0;
 
-        *       { return NULL;           }
-        'has'   { return prpc_cmd_has;   }
-        'hello' { return prpc_cmd_hello; }
-        'funky' { return prpc_cmd_funky; }
+        *           { return NULL;           }
+        'has'       { return prpc_cmd_has;   }
+        'hello'     { return prpc_cmd_hello; }
+        'funky'     { return prpc_cmd_funky; }
+        'replicate' { return prpc_cmd_replicate; }
      */
 }
 

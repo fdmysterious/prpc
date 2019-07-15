@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdarg.h>
+
+#include "msg.h"
 
 #include <sys/log.h>
 
@@ -148,4 +151,59 @@ int token_next_arg( const char **ptr, Token_t *dst, const Token_Type_t type )
     int ret;
     if( (ret = token_next_except( ptr, dst, TOKEN_SEPARATOR ) != 0) ) return ret;
     return token_next_except( ptr, dst, type );
+}
+
+//////////////////////////////////////////
+// Parse arguments
+//////////////////////////////////////////
+int prpc_parse_args( char *resp, const size_t max_len, const char **ptr, const size_t id, const size_t n_args, ... )
+{
+    Token_Type_t tt; // Excepted token type
+    Token_t tk;      // Parsed token
+
+    va_list args;
+
+    va_start( args, n_args );
+    size_t i;
+    for( i = 0 ; i < n_args ; i++ ) {
+        tt = va_arg( args, Token_Type_t );
+        if( token_next_arg( ptr, &tk, tt ) == 0 ) {
+            if( (tt == TOKEN_STRING) || (tt == TOKEN_IDENTIFIER) ) {
+                const char **begin, **end;
+                begin = va_arg( args, const char** );
+                end   = va_arg( args, const char** );
+
+                (*begin) = tk.begin;
+                (*end)   = tk.end;
+            }
+            
+            else if( tt == TOKEN_INT ) {
+                int *intg = va_arg( args, int* );
+                (*intg) = tk.data.intg;
+            }
+
+            else if( tt == TOKEN_FLOAT ) {
+                float *ff = va_arg( args, float* );
+                (*ff) = tk.data.num;
+            }
+
+            else if( tt == TOKEN_BOOLEAN ) {
+                uint8_t *bb = va_arg( args, uint8_t* );
+                (*bb) = tk.data.boolean;
+            }
+
+            else { // Should not go here
+                prpc_build_error( resp, max_len, id, "Unexcepted error" );
+                return 1;
+            }
+        }
+
+        else {
+            // TODO // Use variadic args to output some debug info
+            prpc_build_error(resp, max_len, id, "Unexcepted argument");
+            return 1;
+        }
+    }
+    va_end( args );
+    return 0;
 }
