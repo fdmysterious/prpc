@@ -9,4 +9,4 @@
 #include <stdlib.h>
 #include "types.h"
 
-void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_len );
+void                  prpc_process_line   ( const char *line, char *resp_buf, const size_t max_resp_len );

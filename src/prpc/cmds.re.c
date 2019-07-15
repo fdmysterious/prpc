@@ -6,8 +6,6 @@
 #include "msg.h"
 #include "lex.h"
 
-#define PRPC_CMD( name ) void prpc_cmd_ ## name( const size_t id, const char **ptr, char *resp_buf, const size_t max_resp_len )
-
 PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr );
 PRPC_CMD( has )
 {
@@ -68,7 +66,7 @@ void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_
             cursor = tk.data.cmd.name_begin;
             cmd    = prpc_cmd_parser_get(&cursor);
             if( cmd != NULL ) {
-                cmd( tk.data.cmd.id, &ptr, resp_buf, max_resp_len );
+                cmd( &ptr, resp_buf, max_resp_len, tk.data.cmd.id );
             }
 
             else {
