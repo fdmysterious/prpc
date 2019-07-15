@@ -9,8 +9,7 @@
 #include <pthread.h>
 
 #include <prpc/lex.h>
-#include <prpc/cmds.h>
-
+#include <cmds.h>
 
 static const char *test_cmds[] = {
     "0:hello",
