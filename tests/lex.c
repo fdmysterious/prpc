@@ -12,7 +12,7 @@
 
 #include <test.h>
 
-static const char *test_str = "0293:test_command This yes no yess nooo \"Hello \\\" World !\" 10 -10 -10.2 10.2";
+static const char *test_str = "0293:test_command *:notif This yes no yess nooo \"Hello \\\" World !\" 10 -10 -10.2 10.2";
 
 #define test_token_type( tk, ex ) test_assert( tk.type == ex, "Invalid token type : %s != %s", token_type_str( tk.type ), token_type_str(ex) )
 int test_run()
@@ -26,6 +26,19 @@ int test_run()
     test_assert(
         strncmp(tk.data.cmd.name_begin, "test_command", strlen("test_command") ) == 0,
         "Invalid cmd name, %.*s != test_command", 
+        tk.data.cmd.name_end-tk.data.cmd.name_begin,
+        tk.data.cmd.name_begin
+    );
+
+    token_next(&ptr, &tk);
+    test_token_type( tk, TOKEN_SEPARATOR );
+
+    token_next(&ptr, &tk);
+    test_token_type( tk, TOKEN_COMMAND );
+    test_assert( tk.data.cmd.id == PRPC_ID_NOTIFY, "Invalid Command id : %d != %d", tk.data.cmd.id, PRPC_ID_NOTIFY );
+    test_assert(
+        strncmp(tk.data.cmd.name_begin, "notif", strlen("notif") ) == 0,
+        "Invalid cmd name, %.*s != notif", 
         tk.data.cmd.name_end-tk.data.cmd.name_begin,
         tk.data.cmd.name_begin
     );

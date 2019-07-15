@@ -107,12 +107,14 @@ void token_next( const char **ptr, Token_t *dst )
             return;
         }
 
-        @id (int|[*]) @sep ':' @name identifier {
+        @id (int|'*') @sep ':' @name identifier {
             dst->type  = TOKEN_COMMAND;
             dst->begin = start;
             dst->end   = (*ptr);
             
-            dst->data.cmd.id         = parse_int( id, sep );
+            if( *id == '*' ) dst->data.cmd.id = PRPC_ID_NOTIFY;
+            else            dst->data.cmd.id = parse_int( id, sep );
+
             dst->data.cmd.name_begin = name;
             dst->data.cmd.name_end   = (*ptr);
 
