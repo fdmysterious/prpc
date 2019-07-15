@@ -49,10 +49,9 @@ PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr )
 
 void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_len )
 {
-    const char *ptr    = line;
-    const char *cursor = NULL;
+    const char *ptr  = line;
+    const char *name = NULL;
     Token_t tk;
-    PRPC_Parse_Function_t cmd;
 
     memset( resp_buf, 0, max_resp_len );
 
@@ -63,16 +62,26 @@ void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_
             case TOKEN_EOL:case TOKEN_EOF:break; // End of stream
 
             case TOKEN_COMMAND:
-            cursor = tk.data.cmd.name_begin;
-            cmd    = prpc_cmd_parser_get(&cursor);
-            if( cmd != NULL ) {
-                cmd( &ptr, resp_buf, max_resp_len, tk.data.cmd.id );
-            }
-
-            else {
-                prpc_build_error( resp_buf, max_resp_len, tk.data.cmd.id, "Uknown method" );
-            }
+            name = tk.data.cmd.name_begin;
+            if( tk.data.cmd.id == PRPC_ID_NOTIFY ) prpc_process_notification( resp_buf, max_resp_len, name, &ptr );
+            else                                   prpc_process_cmd( resp_buf, max_resp_len, tk.data.cmd.id, name, &ptr );
             break;
         }
     } while( (tk.type != TOKEN_ERROR) && (tk.type != TOKEN_EOL) && (tk.type != TOKEN_EOF) );
+}
+
+void prpc_process_notification( char *resp, const size_t max_len, const char *notify_name, const char **ptr )
+{
+}
+
+void prpc_process_cmd( char *resp, const size_t max_len, const PRPC_ID_t id, const char *name, const char **ptr )
+{
+    PRPC_Parse_Function_t cmd = prpc_cmd_parser_get(&name);
+    if( cmd != NULL ) {
+        cmd( ptr, resp, max_len, id );
+    }
+
+    else {
+        prpc_build_error( resp, max_len, id, "Uknown method" );
+    }
 }
