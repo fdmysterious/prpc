@@ -9,37 +9,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-typedef enum {
-    TOKEN_ERROR = 0,
-    TOKEN_EOL,
-    TOKEN_EOF,
-    TOKEN_SEPARATOR,
-
-    TOKEN_STRING,
-    TOKEN_INT,
-    TOKEN_FLOAT,
-    TOKEN_BOOLEAN,
-    TOKEN_IDENTIFIER,
-    TOKEN_COMMAND
-} Token_Type_t;
-
-typedef struct {
-    Token_Type_t type;
-    const char *begin;
-    const char   *end;
-
-    union {
-        int  intg;
-        float num;
-        uint8_t boolean;
-
-        struct {
-            int id;
-            const char *name_begin;
-            const char *name_end;
-        } cmd;
-    } data;
-} Token_t;
+#include "types.h"
 
 //////////////////////////////////////////
 

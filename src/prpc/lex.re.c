@@ -107,7 +107,7 @@ void token_next( const char **ptr, Token_t *dst )
             return;
         }
 
-        @id int @sep ':' @name identifier {
+        @id (int|[*]) @sep ':' @name identifier {
             dst->type  = TOKEN_COMMAND;
             dst->begin = start;
             dst->end   = (*ptr);
