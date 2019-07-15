@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "lex.h"
+#include "types.h"
 
 #pragma once
 

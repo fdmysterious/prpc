@@ -26,7 +26,7 @@ static void _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id
     size_t         len  = max_len;
     size_t      written = 0;
 
-    Token_Type_t ntoken = TOKEN_EOF; // EOF for waiting type, then data
+    Token_Type_t ntoken = 0; // EOF for waiting type, then data
 
     len -= (written = snprintf( ptr, len, "%lu:%s", id, cmd ));
     ptr += written;
@@ -35,23 +35,23 @@ static void _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id
     for( i = 0 ; i < nvals ; i++ ) {
         ntoken = va_arg(args, Token_Type_t);
         switch( ntoken ) {
-            case TOKEN_IDENTIFIER:
+            case PRPC_IDENTIFIER:
              len -= (written = snprintf( ptr, len, " %s", va_arg(args, const char*) ));
             break;
 
-            case TOKEN_STRING:
+            case PRPC_STRING:
              len -= (written = snprintf( ptr, len, " \"%s\"", va_arg(args, const char*) ));
             break;
 
-            case TOKEN_INT:
+            case PRPC_INT:
              len -= (written = snprintf( ptr, len, " %d", va_arg(args, int) ));
             break;
 
-            case TOKEN_FLOAT:
+            case PRPC_FLOAT:
              len -= (written = snprintf( ptr, len, " %f", va_arg(args, double) ));
             break;
 
-            case TOKEN_BOOLEAN:
+            case PRPC_BOOLEAN:
              len -= (written = snprintf( ptr, len, " %s", bool_vals[va_arg(args, int) == 1] ));
             break;
             default:break; // TODO // ERROR ?
@@ -91,11 +91,11 @@ void prpc_build_result( char *buf, const size_t max_len, const size_t id, const 
 void prpc_build_result_boolean( char *buf, const size_t max_len, const size_t id, const uint8_t val )
 {
     //snprintf( buf, max_len, "%lu:result %s\n", id, bool_vals[val == 1]); // == 1 to securise array access (what if val == 2 ?)
-    prpc_build_result( buf, max_len, id, 1, TOKEN_BOOLEAN, val );
+    prpc_build_result( buf, max_len, id, 1, PRPC_BOOLEAN, val );
 }
 
 void prpc_build_result_int( char *buf, const size_t max_len, const size_t id, const int intg )
 {
     //snprintf( buf, max_len, "%lu:result %d", id, intg );
-    prpc_build_result( buf, max_len, id, 1, TOKEN_INT, intg );
+    prpc_build_result( buf, max_len, id, 1, PRPC_INT, intg );
 }

@@ -24,11 +24,11 @@ typedef enum {
 } Token_Type_t;
 
 typedef struct {
-Token_Type_t type;
-const char *begin;
-const char   *end;
+    Token_Type_t type;
+    const char *begin;
+    const char   *end;
 
-union {
+    union {
         int  intg;
         float num;
         uint8_t boolean;
