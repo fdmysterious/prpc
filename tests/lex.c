@@ -12,10 +12,11 @@
 
 #include <test.h>
 
-static const char *test_str = "0293:test_command *:notif This yes no yess nooo \"Hello \\\" World !\" 10 -10 -10.2 10.2";
+static const char *test_str   = "0293:test_command *:notif This yes no yess nooo \"Hello \\\" World !\" 10 -10 -10.2 10.2";
+static const char *test_str_2 = " identifier \"string\" 1 1.0 no";
 
 #define test_token_type( tk, ex ) test_assert( tk.type == ex, "Invalid token type : %s != %s", token_type_str( tk.type ), token_type_str(ex) )
-int test_run()
+void test_lexer()
 {
     Token_t tk;
     const char *ptr = test_str;
@@ -147,7 +148,59 @@ int test_run()
 
     token_next(&ptr, &tk);
     test_token_type( tk, TOKEN_EOF );
+}
+
+void test_parse_args()
+{
+    char *ident_begin, *ident_end;
+    char *str_begin  , *str_end;
+
+    int intg;
+    float num;
+
+    uint8_t boolean;
+
+    //////////////////////////////////////////
     
+    const char *ptr = test_str_2;
+    char resp_buf[2048];
+    prpc_parse_args( resp_buf, 2048, &ptr, 0, 4,
+        PRPC_IDENTIFIER,
+        &ident_begin, &ident_end,
+        PRPC_STRING,
+        &str_begin, &str_end,
+        PRPC_INT,
+        &intg,
+        PRPC_FLOAT,
+        &num,
+        PRPC_BOOLEAN,
+        &boolean
+    );
+
+    test_assert(
+        strncmp(ident_begin, "identifier", ident_end-ident_begin) == 0,
+        "Failed parsing identifier : %.*s != %s",
+        ident_end-ident_begin, ident_begin,
+        "identifier"
+    );
+
+
+    test_assert(
+        strncmp( str_begin, "string", str_end-str_begin ) == 0,
+        "Failed parsing string : %.*s != %s",
+        str_end-str_begin,
+        "string"
+    );
+
+    test_assert( intg ==   1, "Failed parsing int : %d != %d"  , intg, 1 );
+    test_assert(  num == 1.0, "Failed parsing float : %f != %f", num , 1.0 );
+    test_assert( boolean == 0, "Failed parsing boolean : %d != %d", boolean, 0 );
+}
+
+int test_run()
+{
+    test_lexer();
+    test_parse_args();
     return 0;
 }
 
