@@ -8,12 +8,12 @@ PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr );
 PRPC_CMD( has )
 {
     const char *name_begin, *name_end;
-    if( prpc_parse_args( resp_buf, max_resp_len, ptr, id, 1, TOKEN_IDENTIFIER, &name_begin, &name_end ) == 0 ) {
+    if( prpc_cmd_parse_args( resp_buf, max_resp_len, ptr, id, 1, TOKEN_IDENTIFIER, &name_begin, &name_end ) == 0 ) {
         log_verbose(">> Looking for %.*s", name_end-name_begin, name_begin);
         PRPC_Parse_Function_t cmd = prpc_cmd_parser_get(&name_begin);
         prpc_build_result_boolean( resp_buf, max_resp_len, id, cmd != NULL );
     }
-    // else error build by prpc_parse_args
+    // else error build by prpc_cmd_parse_args
 }
 
 PRPC_CMD( hello )
@@ -34,7 +34,7 @@ PRPC_CMD( replicate )
     float       num;
     uint8_t boolean;
 
-    if( prpc_parse_args( resp_buf, max_resp_len, ptr, id, 3, PRPC_INT, &intg, PRPC_FLOAT, &num, PRPC_BOOLEAN, &boolean ) == 0 ) {
+    if( prpc_cmd_parse_args( resp_buf, max_resp_len, ptr, id, 3, PRPC_INT, &intg, PRPC_FLOAT, &num, PRPC_BOOLEAN, &boolean ) == 0 ) {
         prpc_build_result( resp_buf, max_resp_len, id, 3, PRPC_INT, intg, PRPC_FLOAT, num, PRPC_BOOLEAN, boolean );
     }
 }
