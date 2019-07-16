@@ -1,1 +1,2 @@
 * Variadic args for prpc_build_error
+* Avoid side effects by prpc_parse_args => Find a way to retrieve parse errors
