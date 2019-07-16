@@ -2,18 +2,18 @@
 #include <stdio.h>
 #include <prpc/lex.h>
 #include <prpc/msg.h>
+#include <sys/log.h>
 
 PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr );
 PRPC_CMD( has )
 {
-    Token_t tk;
-    if( token_next_arg( ptr, &tk, TOKEN_IDENTIFIER ) == 0 ) {
-        const char *cursor = tk.begin;
-        PRPC_Parse_Function_t cmd = prpc_cmd_parser_get(&cursor);
+    const char *name_begin, *name_end;
+    if( prpc_parse_args( resp_buf, max_resp_len, ptr, id, 1, TOKEN_IDENTIFIER, &name_begin, &name_end ) == 0 ) {
+        log_verbose(">> Looking for %.*s", name_end-name_begin, name_begin);
+        PRPC_Parse_Function_t cmd = prpc_cmd_parser_get(&name_begin);
         prpc_build_result_boolean( resp_buf, max_resp_len, id, cmd != NULL );
     }
-
-    else prpc_build_error( resp_buf, max_resp_len, id, "Unexcepted token" );
+    // else error build by prpc_parse_args
 }
 
 PRPC_CMD( hello )
