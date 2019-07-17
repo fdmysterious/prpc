@@ -53,4 +53,22 @@ typedef enum {
     PRPC_IDENTIFIER = TOKEN_IDENTIFIER
 } PRPC_Type_t;
 
+typedef enum {
+    PRPC_OK,
+    PRPC_ERROR_UNKNOWN,
+    PRPC_ERROR_UNEXCEPTED_TOKEN
+} PRPC_Status_Type_t;
+
+typedef struct {
+    PRPC_Status_Type_t status;
+
+    union {
+        struct {
+            size_t idx;
+            Token_Type_t excepted;
+            Token_Type_t got;
+        } token;
+    };
+} PRPC_Status_t;
+
 #define PRPC_CMD( name ) void prpc_cmd_ ## name( const char **ptr, char *resp_buf, const size_t max_resp_len, PRPC_ID_t id )

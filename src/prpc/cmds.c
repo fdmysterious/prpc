@@ -34,8 +34,9 @@ void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_
 //////////////////////////////////////////
 // Parse arguments
 //////////////////////////////////////////
-int prpc_cmd_parse_args( char *resp, const size_t max_len, const char **ptr, const size_t id, const size_t n_args, ... )
+PRPC_Status_t prpc_cmd_parse_args( const char **ptr, const size_t id, const size_t n_args, ... )
 {
+    PRPC_Status_t ret = { .status = PRPC_OK };
     Token_Type_t tt; // Excepted token type
     Token_t tk;      // Parsed token
 
@@ -43,9 +44,11 @@ int prpc_cmd_parse_args( char *resp, const size_t max_len, const char **ptr, con
 
     va_start( args, n_args );
     size_t i;
-    for( i = 0 ; i < n_args ; i++ ) {
+    for( i = 0 ; (i < n_args) && (ret.status == PRPC_OK) ; i++ ) {
         tt = va_arg( args, Token_Type_t );
-        if( token_next_arg( ptr, &tk, tt ) == 0 ) {
+        
+        ret = token_next_arg( ptr, &tk, tt );
+        if( ret.status == PRPC_OK ) {
             if( (tt == TOKEN_STRING) || (tt == TOKEN_IDENTIFIER) ) {
                 const char **begin, **end;
                 begin = va_arg( args, const char** );
@@ -71,17 +74,11 @@ int prpc_cmd_parse_args( char *resp, const size_t max_len, const char **ptr, con
             }
 
             else { // Should not go here
-                prpc_build_error( resp, max_len, id, "Unexcepted error" );
-                return 1;
+                ret.status = PRPC_ERROR_UNKNOWN;
             }
-        }
-
-        else {
-            // TODO // Use variadic args to output some debug info
-            prpc_build_error(resp, max_len, id, "Unexcepted argument");
-            return 1;
         }
     }
     va_end( args );
-    return 0;
+
+    return ret;
 }

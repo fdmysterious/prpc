@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include <prpc/lex.h>
+#include <prpc/cmds.h>
 
 #include <test.h>
 
@@ -163,8 +164,7 @@ void test_parse_args()
     //////////////////////////////////////////
     
     const char *ptr = test_str_2;
-    char resp_buf[2048];
-    prpc_parse_args( resp_buf, 2048, &ptr, 0, 4,
+    prpc_cmd_parse_args( &ptr, 0, 4,
         PRPC_IDENTIFIER,
         &ident_begin, &ident_end,
         PRPC_STRING,

@@ -25,4 +25,9 @@ void prpc_process_notification(
     const char **args_ptr
 );
 
-int         prpc_cmd_parse_args  ( char *resp, const size_t max_len, const char **ptr, const size_t id, const size_t n_args, ... );
+PRPC_Status_t prpc_cmd_parse_args(
+    const char **ptr,
+    const size_t id,
+    const size_t n_args,
+    ...
+);

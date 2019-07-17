@@ -18,6 +18,21 @@ void prpc_build_error( char *buf, const size_t max_len, const size_t id, const c
     snprintf( buf, max_len, "%lu:error \"%s\"\n", id, err );
 }
 
+void prpc_build_error_status( char *buf, const size_t max_len, const size_t id, const PRPC_Status_t err )
+{
+    switch( err.status ) {
+        case PRPC_ERROR_UNEXCEPTED_TOKEN:
+        snprintf(buf, max_len,
+            "%lu:error \"Unexcepted token for arg %lu : Excepted %s, got %s\"",
+            id, err.token.idx,
+            token_type_str( err.token.excepted ),
+            token_type_str( err.token.got      )
+        );
+        break;
+        default : snprintf( buf, max_len, "%lu:error \"Unexcepted error\"", id ); break;
+    }
+}
+
 static void _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id, const char *cmd, const size_t nvals, va_list args )
 {
     static const char *bool_vals[] = { "no", "yes" };

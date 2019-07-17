@@ -134,22 +134,27 @@ void token_next( const char **ptr, Token_t *dst )
      */
 }
 
-int token_next_except( const char **ptr, Token_t *dst, const Token_Type_t type )
+PRPC_Status_t token_next_except( const char **ptr, Token_t *dst, const Token_Type_t type )
 {
+    PRPC_Status_t r = { .status = PRPC_OK };
+
     token_next( ptr, dst );
     if( dst->type != type ) {
         // TODO // Invalid type error
         log_error( "Invalid token : excepted %s, got %s", token_type_str(type), token_type_str(dst->type) );
-        return 1;
+
+        r.status = PRPC_ERROR_UNEXCEPTED_TOKEN;
+        r.data.token.excepted = type;
+        r.data.token.got      = dst->type;
     }
 
-    else return 0;
+    return r;
 }
 
-int token_next_arg( const char **ptr, Token_t *dst, const Token_Type_t type )
+PRPC_Status_t token_next_arg( const char **ptr, Token_t *dst, const Token_Type_t type )
 {
-    int ret;
-    if( (ret = token_next_except( ptr, dst, TOKEN_SEPARATOR ) != 0) ) return ret;
+    PRPC_Status_t r = token_next_except( ptr, dst, TOKEN_SEPARATOR );
+    if( r.status != PRPC_OK ) return r;
     return token_next_except( ptr, dst, type );
 }
 
