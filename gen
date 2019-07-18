@@ -2,15 +2,21 @@
 import script.output as output
 import script.target as target
 
+libprpc = target.lib(
+    "libprpc",
+    srcs = [
+        target.re2c( "src/prpc/lex.re.c" ),
+        "src/prpc/parse.c",
+        "src/prpc/msg.c",
+        "src/prpc/cmds.c"
+    ]
+)
+
 libmain = target.lib(
     "libmain",
     srcs = [
         "src/sys/ansiterm.c",
         "src/sys/log.c",
-        target.re2c("src/prpc/lex.re.c"),
-        "src/prpc/parse.c",
-        "src/prpc/msg.c",
-        "src/prpc/cmds.c",
         target.re2c("src/cmds.re.c")
     ],
     incdirs = [ "src" ]
@@ -23,7 +29,7 @@ app = target.executable(
         "src/main.c"
     ],
     incdirs = [ "src" ],
-    objs    = [ libmain ],
+    objs    = [ libmain, libprpc ],
     aliases = [ "app" ]
 )
 
@@ -45,7 +51,7 @@ def add_test( name ):
         "tests/%s" % name,
         srcs    = [ "tests/%s.c" % name ],
         incdirs = ["src", "tests/lib"],
-        objs=[libmain, libtest]
+        objs=[libprpc, libmain, libtest]
     )
 
 tests = [

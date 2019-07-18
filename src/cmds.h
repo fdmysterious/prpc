@@ -7,3 +7,4 @@
 #pragma once
 
 #include <prpc/cmds.h>
+void cmds_init();

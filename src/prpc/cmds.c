@@ -8,6 +8,9 @@
 #include "msg.h"
 #include "lex.h"
 
+static PRPC_Process_CMD_Callback_t            process_cmd = NULL;
+static PRPC_Process_NOTIFICATION_Callback_t process_notif = NULL;
+
 void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_len )
 {
     const char *ptr  = line;
@@ -29,6 +32,23 @@ void prpc_process_line( const char *line, char *resp_buf, const size_t max_resp_
             break;
         }
     } while( (tk.type != TOKEN_ERROR) && (tk.type != TOKEN_EOL) && (tk.type != TOKEN_EOF) );
+}
+
+void prpc_process_cmd( char *resp_buf, const size_t max_resp_len, const PRPC_ID_t id, const char *cmd_name, const char **args_ptr )
+{
+    if( process_cmd ) process_cmd( resp_buf, max_resp_len, id, cmd_name, args_ptr );
+    else prpc_build_error( resp_buf, max_resp_len, id, "Not supported" );
+}
+
+void prpc_process_notification( char *resp_buf, const size_t max_resp_len, const char *notify_name, const char **args_ptr )
+{
+    if( process_notif ) process_notif( resp_buf, max_resp_len, notify_name, args_ptr );
+}
+
+void prpc_process_callback_register( PRPC_Process_CMD_Callback_t for_cmd, PRPC_Process_NOTIFICATION_Callback_t for_notifs )
+{
+    process_cmd   = for_cmd;
+    process_notif = for_notifs;
 }
 
 //////////////////////////////////////////

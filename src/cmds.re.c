@@ -65,11 +65,7 @@ PRPC_Parse_Function_t prpc_cmd_parser_get( const char **ptr )
      */
 }
 
-void prpc_process_notification( char *resp, const size_t max_len, const char *notify_name, const char **ptr )
-{
-}
-
-void prpc_process_cmd( char *resp, const size_t max_len, const PRPC_ID_t id, const char *name, const char **ptr )
+void process_cmd( char *resp, const size_t max_len, const PRPC_ID_t id, const char *name, const char **ptr )
 {
     PRPC_Parse_Function_t cmd = prpc_cmd_parser_get(&name);
     if( cmd != NULL ) {
@@ -79,4 +75,9 @@ void prpc_process_cmd( char *resp, const size_t max_len, const PRPC_ID_t id, con
     else {
         prpc_build_error( resp, max_len, id, "Uknown method" );
     }
+}
+
+void cmds_init()
+{
+    prpc_process_register_callback( process_cmd, NULL );
 }

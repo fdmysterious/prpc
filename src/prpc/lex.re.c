@@ -8,8 +8,6 @@
 
 #include "msg.h"
 
-#include <sys/log.h>
-
 const char *token_type_str( Token_Type_t type )
 {
     static const char *token_str[] = {
@@ -140,12 +138,9 @@ PRPC_Status_t token_next_except( const char **ptr, Token_t *dst, const Token_Typ
 
     token_next( ptr, dst );
     if( dst->type != type ) {
-        // TODO // Invalid type error
-        log_error( "Invalid token : excepted %s, got %s", token_type_str(type), token_type_str(dst->type) );
-
         r.status = PRPC_ERROR_UNEXCEPTED_TOKEN;
-        r.data.token.excepted = type;
-        r.data.token.got      = dst->type;
+        r.token.excepted = type;
+        r.token.got      = dst->type;
     }
 
     return r;

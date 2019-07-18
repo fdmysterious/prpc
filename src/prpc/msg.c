@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <sys/log.h>
-
 #include "lex.h"
 #include "msg.h"
 
@@ -78,7 +76,7 @@ static void _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id
     }
 
     if( len <= 1 ) {
-        log_error("Not enough place !");
+        //log_error("Not enough place !");
         len -= 1 + (len == 0);
     }
 

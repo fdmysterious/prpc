@@ -22,6 +22,7 @@ static const char *test_cmds[] = {
 
 bool app_init( const int argc, const char * argv[] )
 {
+    cmds_init();
     return true;
 }
 
