@@ -10,7 +10,7 @@
 #include <pthread.h>
 
 #include <prpc/lex.h>
-#include <cmds.h>
+#include "cmds.h"
 
 #include <errno.h>
 #include <sys/stat.h>

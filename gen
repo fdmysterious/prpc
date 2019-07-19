@@ -5,32 +5,40 @@ import script.target as target
 libprpc = target.lib(
     "libprpc",
     srcs = [
-        target.re2c( "src/prpc/lex.re.c" ),
-        "src/prpc/parse.c",
-        "src/prpc/msg.c",
-        "src/prpc/cmds.c"
-    ]
+        target.re2c( "src/prpc/prpc/lex.re.c" ),
+        "src/prpc/prpc/parse.c",
+        "src/prpc/prpc/msg.c",
+        "src/prpc/prpc/cmds.c"
+    ],
+
+    incdirs=["src/prpc"]
 )
+
+###############################
 
 libmain = target.lib(
     "libmain",
     srcs = [
-        "src/sys/ansiterm.c",
-        "src/sys/log.c",
-        target.re2c("src/cmds.re.c")
+        "src/common/sys/ansiterm.c",
+        "src/common/sys/log.c",
     ],
-    incdirs = [ "src" ]
+
+    incdirs=["src/common"]
 )
 
-app = target.executable(
-    "app",
+example = target.executable(
+    "example",
     srcs = [
-        "src/app.c",
-        "src/main.c"
+        target.re2c("src/example/cmds.re.c"),
+        "src/example/app.c",
+        "src/example/main.c"
     ],
-    incdirs = [ "src" ],
-    objs    = [ libmain, libprpc ],
-    aliases = [ "app" ]
+
+    incdirs=["src/common", "src/prpc"],
+
+    aliases=["app"],
+
+    objs=[libmain, libprpc]
 )
 
 libtest = target.lib(
@@ -40,7 +48,8 @@ libtest = target.lib(
     ],
 
     incdirs = [
-        "src"
+        "src/common",
+        "src/prpc"
     ],
 
     objs = [ libmain ]
@@ -50,8 +59,8 @@ def add_test( name ):
     return target.executable(
         "tests/%s" % name,
         srcs    = [ "tests/%s.c" % name ],
-        incdirs = ["src", "tests/lib"],
-        objs=[libprpc, libmain, libtest]
+        incdirs = ["src/prpc","src/common", "tests/lib"],
+        objs=[libprpc, libtest, libmain]
     )
 
 tests = [
@@ -61,6 +70,6 @@ tests = [
 ]
 
 with open( "targets/autogen.ninja", "w" ) as fhandle:
-    output.rules( fhandle, [app] + tests )
+    output.rules( fhandle, [example] + tests )
 
 # MODIFIED
