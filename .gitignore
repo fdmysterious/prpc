@@ -5,3 +5,5 @@ bin/
 *.pyc
 
 targets/autogen.ninja
+
+**/:*
