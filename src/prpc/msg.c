@@ -83,7 +83,7 @@ size_t prpc_build_ok( char *buf, const size_t max_len, const size_t id )
 size_t prpc_build_error( char *buf, const size_t max_len, const size_t id, const char *err )
 {
     //snprintf( buf, max_len, "%lu:error \"%s\"", id, err );
-    return prpc_build_msg( buf, max_len, id, "ok", 1, PRPC_STRING, err );
+    return prpc_build_msg( buf, max_len, id, "error", 1, PRPC_STRING, err );
 }
 
 size_t prpc_build_error_status( char *buf, const size_t max_len, const size_t id, const PRPC_Status_t err )
