@@ -14,10 +14,11 @@
 
 int test_run()
 {
-    const char *msg_ref = "0:hello_world identifier \"string\" yes no 1 -1 1.000000 -1.000000\n";
+    const char *msg_ref = "0:hello_world identifier \"string\" yes no 1 -1 1.000000 -1.000000";
+    const size_t target_len = strlen(msg_ref);
     char buf[2048];
 
-    prpc_build_msg( buf, 2048,
+    size_t written = prpc_build_msg( buf, 2048,
         0, "hello_world", 8,
         TOKEN_IDENTIFIER, "identifier",
         TOKEN_STRING    , "string",
@@ -30,6 +31,7 @@ int test_run()
     );
 
     test_assert( strncmp( msg_ref, buf, strlen(msg_ref)) == 0, "Invalid generated string : %s", buf );
+    test_assert( written == target_len, "Written %lu != %lu", target_len, written );
 
     return 0;
 }
