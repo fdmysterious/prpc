@@ -79,5 +79,5 @@ void process_cmd( char *resp, const size_t max_len, const PRPC_ID_t id, const ch
 
 void cmds_init()
 {
-    prpc_process_register_callback( process_cmd, NULL );
+    prpc_process_callback_register( process_cmd, NULL );
 }

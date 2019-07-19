@@ -6,32 +6,7 @@
 #include "lex.h"
 #include "msg.h"
 
-void prpc_build_ok( char *buf, const size_t max_len, const size_t id )
-{
-    snprintf( buf, max_len, "%lu:ok\n", id );
-}
-
-void prpc_build_error( char *buf, const size_t max_len, const size_t id, const char *err )
-{
-    snprintf( buf, max_len, "%lu:error \"%s\"\n", id, err );
-}
-
-void prpc_build_error_status( char *buf, const size_t max_len, const size_t id, const PRPC_Status_t err )
-{
-    switch( err.status ) {
-        case PRPC_ERROR_UNEXCEPTED_TOKEN:
-        snprintf(buf, max_len,
-            "%lu:error \"Unexcepted token for arg %lu : Excepted %s, got %s\"",
-            id, err.token.idx,
-            token_type_str( err.token.excepted ),
-            token_type_str( err.token.got      )
-        );
-        break;
-        default : snprintf( buf, max_len, "%lu:error \"Unexcepted error\"", id ); break;
-    }
-}
-
-static void _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id, const char *cmd, const size_t nvals, va_list args )
+static size_t _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id, const char *cmd, const size_t nvals, va_list args )
 {
     static const char *bool_vals[] = { "no", "yes" };
 
@@ -81,34 +56,67 @@ static void _prpc_build_msg_va( char *buf, const size_t max_len, const size_t id
     }
 
     // Closing resp string
-    *(ptr  ) = '\n';
-    *(ptr+1) =    0;
+    //*(ptr  ) = '\n';
+    //*(ptr+1) =    0;
+    *(ptr)=0;
+    return max_len - len;
 }
 
-void prpc_build_msg( char *buf, const size_t max_len, const size_t id, const char *cmd, const size_t nvals, ... )
+size_t prpc_build_msg( char *buf, const size_t max_len, const size_t id, const char *cmd, const size_t nvals, ... )
 {
     va_list args;
     va_start( args, nvals );
-    _prpc_build_msg_va( buf, max_len, id, cmd, nvals, args );
+    size_t written = _prpc_build_msg_va( buf, max_len, id, cmd, nvals, args );
     va_end( args );
+
+    return written;
 }
 
-void prpc_build_result( char *buf, const size_t max_len, const size_t id, const size_t nvals, ... )
+//////////////////////////////////////////
+
+size_t prpc_build_ok( char *buf, const size_t max_len, const size_t id )
+{
+    //snprintf( buf, max_len, "%lu:ok", id );
+    return prpc_build_msg( buf, max_len, id, "ok", 0 );
+}
+
+size_t prpc_build_error( char *buf, const size_t max_len, const size_t id, const char *err )
+{
+    //snprintf( buf, max_len, "%lu:error \"%s\"", id, err );
+    return prpc_build_msg( buf, max_len, id, "ok", 1, PRPC_STRING, err );
+}
+
+size_t prpc_build_error_status( char *buf, const size_t max_len, const size_t id, const PRPC_Status_t err )
+{
+    switch( err.status ) {
+        case PRPC_ERROR_UNEXCEPTED_TOKEN:
+        return snprintf(buf, max_len,
+            "%lu:error \"Unexcepted token for arg %lu : Excepted %s, got %s\"",
+            id, err.token.idx,
+            token_type_str( err.token.excepted ),
+            token_type_str( err.token.got      )
+        );
+        break;
+        default : return snprintf( buf, max_len, "%lu:error \"Unexcepted error\"", id ); break;
+    }
+}
+
+size_t prpc_build_result( char *buf, const size_t max_len, const size_t id, const size_t nvals, ... )
 {
     va_list args;
     va_start( args, nvals );
-    _prpc_build_msg_va( buf, max_len, id, "result", nvals, args );
+    size_t written = _prpc_build_msg_va( buf, max_len, id, "result", nvals, args );
     va_end( args );
+
+    return written;
 }
 
-void prpc_build_result_boolean( char *buf, const size_t max_len, const size_t id, const uint8_t val )
+size_t prpc_build_result_boolean( char *buf, const size_t max_len, const size_t id, const uint8_t val )
 {
-    //snprintf( buf, max_len, "%lu:result %s\n", id, bool_vals[val == 1]); // == 1 to securise array access (what if val == 2 ?)
-    prpc_build_result( buf, max_len, id, 1, PRPC_BOOLEAN, val );
+    return prpc_build_result( buf, max_len, id, 1, PRPC_BOOLEAN, val );
 }
 
-void prpc_build_result_int( char *buf, const size_t max_len, const size_t id, const int intg )
+size_t prpc_build_result_int( char *buf, const size_t max_len, const size_t id, const int intg )
 {
-    //snprintf( buf, max_len, "%lu:result %d", id, intg );
-    prpc_build_result( buf, max_len, id, 1, PRPC_INT, intg );
+    return prpc_build_result( buf, max_len, id, 1, PRPC_INT, intg );
 }
