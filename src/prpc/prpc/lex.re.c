@@ -1,11 +1,5 @@
 #include "lex.h"
 #include "parse.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdarg.h>
-
 #include "msg.h"
 
 const char *token_type_str( Token_Type_t type )
@@ -50,7 +44,7 @@ void token_next( const char **ptr, Token_t *dst )
         eol        = "[\r\n]+";
         wh         = [ \t]*;
 
-        identifier = [a-zA-Z0-9\-_\.]+;
+        identifier = [a-zA-Z0-9\-_\./]+;
         bool_true  = 'yes';
         bool_false = 'no';
 

@@ -1,7 +1,5 @@
 #include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <printf/printf.h>
 
 #include "lex.h"
 #include "msg.h"
@@ -14,14 +12,14 @@ static size_t _prpc_build_msg_va( char *buf, const size_t max_len, const size_t 
     size_t         len  = max_len;
     size_t      written = 0;
 
-    Token_Type_t ntoken = 0; // EOF for waiting type, then data
+    int ntoken = 0; // EOF for waiting type, then data
 
-    len -= (written = snprintf( ptr, len, "%lu:%s", id, cmd ));
+    len -= (written = snprintf( ptr, len, "%lu:%s", (unsigned long)id, cmd ));
     ptr += written;
 
     size_t i;
     for( i = 0 ; i < nvals ; i++ ) {
-        ntoken = va_arg(args, Token_Type_t);
+        ntoken = va_arg(args, int);
         switch( ntoken ) {
             case PRPC_IDENTIFIER:
              len -= (written = snprintf( ptr, len, " %s", va_arg(args, const char*) ));
@@ -32,7 +30,7 @@ static size_t _prpc_build_msg_va( char *buf, const size_t max_len, const size_t 
             break;
 
             case PRPC_INT:
-             len -= (written = snprintf( ptr, len, " %d", va_arg(args, int) ));
+             len -= (written = snprintf( ptr, len, " %llu", va_arg(args, uint64_t) ));
             break;
 
             case PRPC_FLOAT:
@@ -92,12 +90,12 @@ size_t prpc_build_error_status( char *buf, const size_t max_len, const size_t id
         case PRPC_ERROR_UNEXCEPTED_TOKEN:
         return snprintf(buf, max_len,
             "%lu:error \"Unexcepted token for arg %lu : Excepted %s, got %s\"",
-            id, err.token.idx,
+            (unsigned long)id, (unsigned long)err.token.idx,
             token_type_str( err.token.excepted ),
             token_type_str( err.token.got      )
         );
         break;
-        default : return snprintf( buf, max_len, "%lu:error \"Unexcepted error\"", id ); break;
+        default : return snprintf( buf, max_len, "%lu:error \"Unexcepted error\"", (unsigned long)id ); break;
     }
 }
 

@@ -4,9 +4,6 @@
 // Florian Dupeyron
 // July 2019
 
-#include <stdlib.h>
-#include <stdint.h>
-
 #include "types.h"
 
 #pragma once
